@@ -18,6 +18,12 @@ async function getRecipeInformation(recipe_id) {
     });
 }
 
+async function getRecipesPreview(array){
+    for(let i=0;i<array.length;i++){
+        return await getRecipeDetails(array[i]);
+    }
+}
+
 
 
 async function getRecipeDetails(recipe_id) {
@@ -40,6 +46,7 @@ async function getRecipeDetails(recipe_id) {
 
 
 exports.getRecipeDetails = getRecipeDetails;
+exports.getRecipesPreview = getRecipesPreview;
 
 
 
