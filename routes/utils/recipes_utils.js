@@ -45,10 +45,27 @@ async function getRecipeDetails(recipe_id) {
     }
 }
 
+async function searchRecipes(req) {
+    return axios.get(`${api_domain}/complexSearch`, {
+        params: {
+          query:req.body.title,
+          cuisine:req.body.cuisine,
+          diet:req.body.diet,
+          intolerances:req.body.intolerances,
+          number:req.body.number,
+          apiKey: process.env.spooncular_apiKey
+  
+        }
+      });
+}
 
 
 exports.getRecipeDetails = getRecipeDetails;
 exports.getRecipesPreview = getRecipesPreview;
+exports.searchRecipes = searchRecipes;
+
+
+
 
 
 

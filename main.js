@@ -5,7 +5,10 @@ var path = require("path");
 var logger = require("morgan");
 const session = require("client-sessions");
 const DButils = require("./routes/utils/DButils");
+const Rutils = require("./routes/utils/recipes_utils");
 var cors = require('cors')
+const axios = require("axios");
+const api_domain = "https://api.spoonacular.com/recipes";
 
 var app = express();
 app.use(logger("dev")); //logger
@@ -28,18 +31,52 @@ app.use(express.static(path.join(__dirname, "public"))); //To serve static files
 //local:
 app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.json());
-app.use(express.urlencoded({ extended:true}));
+app.use(express.urlencoded({ extended: true }));
 //remote:
 // app.use(express.static(path.join(__dirname, '../assignment-3-3-basic/dist')));
-app.get("/",function(req,res)
-{ 
-  //remote: 
-  // res.sendFile(path.join(__dirname, '../assignment-3-3-basic/dist/index.html'));
-  //local:
-  res.sendFile(__dirname+"/index.html");
+app.get("/", async function(req, res, next) {
+  try {
+    let random = [];
+      const response = await axios.get(`${api_domain}/random`, {
+        params: {
+          number: 3,
+          // tags: 'vegetarian,dessert',
+          apiKey: process.env.spooncular_apiKey
 
+        }
+      });
+    // console.log(response.data.recipes.length);
+    // res.status(200).json(response.data); // Send 'random' array as JSON response
+    let recipes_id = []
+    for (let i=0;i<response.data.recipes.length;i++){
+      recipes_id[i] = response.data.recipes[i].id;
+    }
+    let result = await Rutils.getRecipesPreview(recipes_id);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
 });
 
+
+//get 3 random recipes
+// app.get("/",function(req,res,next)
+// { 
+//   try{
+//     let random = [];
+//   for(let i=0;i<3;i++){
+//     random[i] = axios.get(`${api_domain}/recipes/random`, {
+//       params: {
+//           includeNutrition: false,
+//           apiKey: process.env.spooncular_apiKey
+//       }});
+//   }
+//   res.status(200).send(random);
+//   }
+//   catch(error){
+//     next(error); 
+//   }
+// });
 // app.use(cors());
 // app.options("*", cors());
 
