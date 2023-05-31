@@ -20,8 +20,10 @@ async function getRecipeInformation(recipe_id) {
 
 async function getRecipesPreview(array){
     for(let i=0;i<array.length;i++){
-        return await getRecipeDetails(array[i]);
+        array[i]=await getRecipeDetails(array[i])
+        
     }
+    return  array ;
 }
 
 
