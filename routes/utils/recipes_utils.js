@@ -23,7 +23,7 @@ async function getRecipesPreview(array){
         array[i]=await getRecipeDetails(array[i])
         
     }
-    return array ;
+    return  array ;
 }
 
 
