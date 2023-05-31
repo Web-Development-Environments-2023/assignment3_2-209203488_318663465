@@ -8,6 +8,21 @@ const api_domain = "https://api.spoonacular.com/recipes";
 router.get("/", (req, res) => res.send("im here"));
 
 
+
+router.get('/new', async (req, res, next) => {
+  const user_id = req.session.user_id;
+
+    try {
+      const recipes= await DButils.execQuery(`select * from myrecipes where user_id='${user_id}'`);
+      res.send(recipes);
+    } catch (error) {
+      next(error);
+    }
+});
+
+
+
+
 /**
  * This path returns a full details of a recipe by its id
  */
@@ -56,5 +71,39 @@ router.post("/search", async (req, res, next) => {
     next(error);
   }
 });
+
+router.post('/new', async (req, res, next) => {
+  try {
+    const user_id = req.session.user_id;
+
+    let recipe_details = {
+      title: req.body.title,
+      image_data: req.body.image_data,
+      instruction: req.body.instruction,
+      time: req.body.time,
+      vegetarian: req.body.vegetarian,
+      vagan: req.body.vagan,
+      Gfree: req.body.Gfree,
+      ingredients: req.body.ingredients,
+      numOfDish: req.body.numOfDish,
+    }
+
+    console.log(recipe_details);
+
+    await DButils.execQuery(
+      `INSERT INTO myrecipes (user_id,title, image_data, instructions, time, vegetarian, vagan, Gfree, ingredients, numOfDish)
+      VALUES ( '${user_id }', '${recipe_details.title}', '${recipe_details.image_data}', '${recipe_details.instruction}',
+      '${recipe_details.time}', '${recipe_details.vegetarian}', '${recipe_details.vagan}',
+      '${recipe_details.Gfree}', '${recipe_details.ingredients}', '${recipe_details.numOfDish}')`
+    );
+
+    res.status(201).send({ message: "recipe created", success: true });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
 
 module.exports = router;
