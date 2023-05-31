@@ -27,6 +27,8 @@ app.use(express.urlencoded({ extended: false })); // parse application/x-www-for
 app.use(express.static(path.join(__dirname, "public"))); //To serve static files such as images, CSS files, and JavaScript files
 //local:
 app.use(express.static(path.join(__dirname, "dist")));
+app.use(express.json());
+app.use(express.urlencoded({ extended:true}));
 //remote:
 // app.use(express.static(path.join(__dirname, '../assignment-3-3-basic/dist')));
 app.get("/",function(req,res)
