@@ -23,16 +23,20 @@ router.post("/Register", async (req, res, next) => {
 
     if (users.find((x) => x.username === user_details.username))
       throw { status: 409, message: "Username taken" };
-
+      console.log(process.env.bcrypt_saltRounds)
     // add the new username
     let hash_password = bcrypt.hashSync(
       user_details.password,
       parseInt(process.env.bcrypt_saltRounds)
     );
     await DButils.execQuery(
-      `INSERT INTO users VALUES ('${user_details.username}', '${user_details.firstname}', '${user_details.lastname}',
+      `INSERT INTO users (username, firstname, lastname, country, password, email)
+       VALUES ('${user_details.username}', '${user_details.firstname}', '${user_details.lastname}',
       '${user_details.country}', '${hash_password}', '${user_details.email}')`
     );
+    users = await DButils.execQuery("SELECT username from users");
+
+    console.log(users)
     res.status(201).send({ message: "user created", success: true });
   } catch (error) {
     next(error);
@@ -59,6 +63,7 @@ router.post("/Login", async (req, res, next) => {
 
     // Set cookie
     req.session.user_id = user.user_id;
+    console.log(req.session.user_id);
 
 
     // return cookie
