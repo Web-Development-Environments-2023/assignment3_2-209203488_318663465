@@ -33,8 +33,27 @@ app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //remote:
+
+
+
+const corsConfig = {
+  origin: true,
+  credentials: true
+};
+
+app.use(cors(corsConfig));
+app.options("*", cors(corsConfig));
+
+var port = process.env.PORT || "3000"; //local=3000 remote=80
+//#endregion
+const user = require("./routes/user");
+const recipes = require("./routes/recipes");
+const auth = require("./routes/auth");
+
+
+
 // app.use(express.static(path.join(__dirname, '../assignment-3-3-basic/dist')));
-app.get("/", async function(req, res, next) {
+app.get("/rand", async function(req, res, next) {
   try {
     let random = [];
       const response = await axios.get(`${api_domain}/random`, {
@@ -59,40 +78,28 @@ app.get("/", async function(req, res, next) {
 });
 
 
-//get 3 random recipes
-// app.get("/",function(req,res,next)
-// { 
-//   try{
-//     let random = [];
-//   for(let i=0;i<3;i++){
-//     random[i] = axios.get(`${api_domain}/recipes/random`, {
-//       params: {
-//           includeNutrition: false,
-//           apiKey: process.env.spooncular_apiKey
-//       }});
-//   }
-//   res.status(200).send(random);
-//   }
-//   catch(error){
-//     next(error); 
-//   }
-// });
-// app.use(cors());
-// app.options("*", cors());
+app.get("/last", async function(req, res, next) {
+  if(req.session.user_id !=null){
 
-const corsConfig = {
-  origin: true,
-  credentials: true
-};
+  try {
+      const recipes_id = await DButils.execQuery(`select recipe_id from lastrecipes where user_id='${user_id}'`);
+       let result = await Rutils.getRecipesPreview(recipes_id);
+       res.status(200).json(result);
 
-app.use(cors(corsConfig));
-app.options("*", cors(corsConfig));
+  }
+ catch (error) {
+  next(error);
+}
 
-var port = process.env.PORT || "80"; //local=3000 remote=80
-//#endregion
-const user = require("./routes/user");
-const recipes = require("./routes/recipes");
-const auth = require("./routes/auth");
+}});
+
+// const corsConfig = {
+//   origin: "http://localhost:8080/", // Allow requests from this origin
+//   credentials: true
+// };
+
+// app.use(cors(corsConfig));
+// app.options("*", cors(corsConfig));
 
 
 //#region cookie middleware
@@ -112,7 +119,7 @@ app.use(function (req, res, next) {
 });
 //#endregion
 
-// ----> For cheking that our server is alive
+// ----> For checking that our server is alive
 app.get("/alive", (req, res) => res.send("I'm alive"));
 
 // Routings
