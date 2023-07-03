@@ -72,33 +72,15 @@ if (watched_recipes.length >= 3) {
 });
 
 
-router.get("/search", async (req, res, next) => {
+router.post("/search", async (req, res, next) => {
   try {
-    console.log(req.query);
-
-    const query = req.query.searchQuery
-    const number = parseInt(req.query.number);
-    const cuisine = req.query.cuisine;
-    const diet = req.query.diet;
-    let intolerances = req.query.intolerances;
-
-    //Maybe Not Needed!!!!!!!!!!!
-    if (req.session && req.session.user_name){
-      req.session.last_search = query;
+    const response = await recipes_utils.searchRecipes(req);
+    let recipes_id = []
+    for (let i=0;i<response.data.results.length;i++){
+      recipes_id[i] = response.data.results[i].id;
     }
-
-    if (intolerances == 'undefined'){
-      intolerances = '';
-    }
-
-    const recipes = await recipes_utils.getSearchRecipes(query, number, cuisine, diet, intolerances);
-    console.log(recipes);
-    if (recipes.length == 0){
-      res.send("There is no results!");
-      return;
-    }
-
-    res.send(recipes);
+    let result = await recipes_utils.getRecipesPreview(recipes_id);
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }

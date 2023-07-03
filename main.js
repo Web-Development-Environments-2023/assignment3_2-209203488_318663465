@@ -155,7 +155,37 @@ app.get("/rand", async function(req, res, next) {
      for (let i=0;i<3;i++){
       recipes_id[i] = recipes1[i].id;
     }
-    let result = await Rutils.getRecipesPreview(recipes_id);
+    // let result = await Rutils.getRecipesPreview(recipes_id);
+    let result = [{
+      "id": 633068,
+      "title": "Authentic Bolognese Sauce",
+      "readyInMinutes": 45,
+      // "image": "https://spoonacular.com/recipeImages/633068-556x370.jpg",
+      "popularity": 6,
+      "vegan": false,
+      "vegetarian": false,
+      "glutenFree": true
+  },
+  {
+      "id": 643669,
+      "title": "Fried Bee Hoon/ Vermicelli",
+      "readyInMinutes": 45,
+      // "image": "https://spoonacular.com/recipeImages/643669-556x370.jpg",
+      "popularity": 2,
+      "vegan": false,
+      "vegetarian": false,
+      "glutenFree": false
+  },
+  {
+      "id": 664101,
+      "title": "Turkish squares",
+      "readyInMinutes": 45,
+      // "image": "https://spoonacular.com/recipeImages/664101-556x370.jpg",
+      "popularity": 3,
+      "vegan": false,
+      "vegetarian": true,
+      "glutenFree": false
+  }]
     res.status(200).json(result);
   } catch (error) {
     next(error);
