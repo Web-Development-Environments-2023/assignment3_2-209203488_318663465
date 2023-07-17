@@ -23,9 +23,35 @@ router.get('/new', async (req, res, next) => {
     }
 });
 
+router.get('/Family', async (req, res, next) => {
+  const user_id = req.session.user_id;
+  console.log(user_id);
+
+
+    try {
+      const recipes= await DButils.execQuery(`select * from family_recipes where user_id='${user_id}'`);
+      console.log(recipes);
+      res.send(recipes);
+    } catch (error) {
+      next(error);
+    }
+});
+
 router.get("/myFullDetailes", async (req, res, next) => {
   try {
     const recipe = await recipes_utils.getMyFullDetailsOfRecipe(req.query.recipeid);
+    if (req.session && req.session.user_name){
+      recipes_utils.postLastRecipe(req.session.user_name, recipe.id);
+    }
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/myFamilyFullDetailes", async (req, res, next) => {
+  try {
+    const recipe = await recipes_utils.getFamilyFullDetailsOfRecipe(req.query.recipeid);
     if (req.session && req.session.user_name){
       recipes_utils.postLastRecipe(req.session.user_name, recipe.id);
     }
@@ -89,28 +115,31 @@ router.post("/search", async (req, res, next) => {
 
 router.post('/new', async (req, res, next) => {
   try {
+    console.log("reach here")
     const user_id = req.session.user_id;
 
     let recipe_details = {
       title: req.body.title,
-      image_data: req.body.image_data,
-      instruction: req.body.instruction,
-      time: req.body.time,
+      image: req.body.image,
+      instructions: req.body.instructions,
+      readyInMinutes: req.body.readyInMinutes,
       vegetarian: req.body.vegetarian,
       vagan: req.body.vagan,
-      Gfree: req.body.Gfree,
-      ingredients: req.body.ingredients,
-      numOfDish: req.body.numOfDish,
+      glutenFree: req.body.glutenFree,
+      extendedIngredients: req.body.extendedIngredients,
+      servings: req.body.servings,
+      aggregateLikes:req.body.aggregateLikes
     }
 
     await DButils.execQuery(
       `INSERT INTO myrecipes (user_id,title, image, instructions, readyInMinutes, vegetarian, vagan, glutenFree, extendedIngredients, servings)
-      VALUES ( '${user_id }', '${recipe_details.title}', '${recipe_details.image_data}', '${recipe_details.instruction}',
-      '${recipe_details.time}', '${recipe_details.vegetarian}', '${recipe_details.vagan}',
-      '${recipe_details.Gfree}', '${recipe_details.ingredients}', '${recipe_details.numOfDish}')`
+      VALUES ( '${user_id }', '${recipe_details.title}', '${recipe_details.image}', '${recipe_details.instructions}',
+      '${recipe_details.readyInMinutes}', '${recipe_details.vegetarian}', '${recipe_details.vagan}',
+      '${recipe_details.glutenFree}', '${recipe_details.extendedIngredients}', '${recipe_details.servings}')`
     );
+    console.log("reach here2")
 
-    res.status(201).send({ message: "recipe created", success: true });
+    res.status(200).send({ message: "recipe created", success: true });
   } catch (error) {
     next(error);
   }
