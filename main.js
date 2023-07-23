@@ -30,11 +30,11 @@ app.use(
 app.use(express.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
 app.use(express.static(path.join(__dirname, "public"))); //To serve static files such as images, CSS files, and JavaScript files
 //remote:
-app.use(express.static(path.join(__dirname, '../assignment3_3-209203488_318663465-master/dist')));
+app.use(express.static(path.join(__dirname, '../assignment3_3-209203488_318663465/dist')));
 app.get("/",function(req,res)
 { 
   //remote: 
-  res.sendFile(path.join(__dirname, '../assignment3_2-209203488_318663465-main/dist/index.html'));
+  res.sendFile(path.join(__dirname, '../assignment3_2-209203488_318663465/dist/index.html'));
 
 });
 
