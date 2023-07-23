@@ -6,9 +6,6 @@ const bcrypt = require("bcrypt");
 
 router.post("/Register", async (req, res, next) => {
   try {
-    // parameters exists
-    // valid parameters
-    // username exists
     let user_details = {
       username: req.body.username,
       firstname: req.body.firstname,
@@ -72,7 +69,11 @@ router.post("/Login", async (req, res, next) => {
 });
 
 router.post("/Logout", function (req, res) {
+  console.log(req.session.user_id);
+
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
+  // req.session.destroy();
+
   res.send({ success: true, message: "logout succeeded" });
 });
 

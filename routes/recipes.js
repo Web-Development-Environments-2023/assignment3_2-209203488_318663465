@@ -8,7 +8,7 @@ const api_domain = "https://api.spoonacular.com/recipes";
 router.get("/", (req, res) => res.send("im here"));
 
 
-
+//get *my* new recipes
 router.get('/new', async (req, res, next) => {
   const user_id = req.session.user_id;
   console.log(user_id);
@@ -22,7 +22,7 @@ router.get('/new', async (req, res, next) => {
       next(error);
     }
 });
-
+//get *family*  recipes
 router.get('/Family', async (req, res, next) => {
   const user_id = req.session.user_id;
   console.log(user_id);
@@ -36,6 +36,7 @@ router.get('/Family', async (req, res, next) => {
       next(error);
     }
 });
+//get *my* full details from db about recipes
 
 router.get("/myFullDetailes", async (req, res, next) => {
   try {
@@ -48,6 +49,7 @@ router.get("/myFullDetailes", async (req, res, next) => {
     next(error);
   }
 });
+//get *family* full details from db about recipes
 
 router.get("/myFamilyFullDetailes", async (req, res, next) => {
   try {
@@ -93,6 +95,10 @@ if (watched_recipes.length >= 3) {
     `INSERT INTO lastrecipes (user_id, recipe_id)
     VALUES ('${user_id}', '${recipe_id}')`);
 
+    await DButils.execQuery(
+      `INSERT INTO seenRecipes (recipe_id,user_id)
+      VALUES ('${recipe_id}', '${user_id}')`);
+  
 }
 }
 });
@@ -112,6 +118,7 @@ router.post("/search", async (req, res, next) => {
   }
 });
 
+//create *my* new recipes
 
 router.post('/new', async (req, res, next) => {
   try {

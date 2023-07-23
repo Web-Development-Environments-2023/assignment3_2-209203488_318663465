@@ -28,19 +28,6 @@ async function getRecipesPreview(array){
     return  array ;
 }
 
-// async function getPreviewRecipes(res){
-//     let response = [];
-
-//     for (let i = 0; i < res.length; i++){
-//         let recipeId = res[i].id == undefined ? res[i].recipe_id : res[i].id;
-//         if (recipeId == undefined) {
-//             recipeId = res[i];
-//         }
-//         response[i] = await getRecipeDetails(recipeId);
-//     }
-
-//     return response;
-// }
 
 async function getRecipeDetails(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
@@ -72,19 +59,6 @@ async function searchRecipes(req) {
         }
       });
 }
-// async function searchRecipes(query,number,sort,cuisine) {
-//     const response = await axios.get(`${api_domain}/complexSearch`, {
-//         params: {
-//             query: query,
-//             number: number,
-//             sort: sort,
-//             cuisine: cuisine,
-//             apiKey: process.env.spooncular_apiKey
-//         }
-        
-//     });
-//     return response
-// }
 
 
 async function getSearchResults(query,number,sort,cuisine) {
@@ -127,18 +101,11 @@ async function getMyFullDetailsOfRecipe(recipe_id) {
     let return_ingredients = [];
 
     for (let i = 0; i < ingredients.length; i++ ){
-        console.log(`len:${instructions.length} instructions: ${instructions[i].instruction_id} + ${instructions[i].instruction_data} `)
+        console.log(`len:${ingredients.length} ingredients: ${ingredients[i].ingredients_id} + ${ingredients[i].ingredients_name} `)
         return_ingredients.push({ number: i, original: ingredients[i].ingredients_name });
     }
 
 
-    // let ingredients = await DButils.execQuery(`SELECT * FROM ingredientsrecipes WHERE recipe_id='${recipe_id}'`);
-    // let return_ingredients = [];
-
-    // for (let i = 0; i < ingredients.length; i++ ){
-    //     return_ingredients.push({number: i, original: ingredients[i].ingredient_name});
-    // }
-    
     const fullDetails = {
         id: id,
         image: image,
@@ -194,12 +161,6 @@ async function getFamilyFullDetailsOfRecipe(recipe_id) {
     }
 
 
-    // let ingredients = await DButils.execQuery(`SELECT * FROM ingredientsrecipes WHERE recipe_id='${recipe_id}'`);
-    // let return_ingredients = [];
-
-    // for (let i = 0; i < ingredients.length; i++ ){
-    //     return_ingredients.push({number: i, original: ingredients[i].ingredient_name});
-    // }
     const fullDetails = {
         id: id,
         image: image,
